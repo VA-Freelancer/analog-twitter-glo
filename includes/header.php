@@ -1,8 +1,4 @@
-<?php
-    include_once "functions.php";
 
-    $title= '';
-?>
 
 <!doctype html>
 <html lang="ru">

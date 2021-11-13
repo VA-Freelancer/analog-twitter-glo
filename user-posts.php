@@ -1,13 +1,14 @@
 <?php
-    include_once "includes/functions.php";
-//    if(!isset($_GET['id']) || empty($_GET['id'])) header("Location: " . get_url());
+include_once "includes/functions.php";
+    if(!isset($_SESSION['user']['id'])):
+        if(!isset($_GET['id']) || empty($_GET['id'])) header("Location: " . get_url());
+    endif;
 
-
-    if(isset($_SESSION['user']['id'])){
+    if (isset($_GET['id']) && !empty($_GET['id'])){
+            $id = $_GET['id'];
+    }else if(isset($_SESSION['user']['id'])){
         $id = $_SESSION['user']['id'];
-    }else if (isset($_GET['id']) && !empty($_GET['id'])){
-        $id = $_GET['id'];
-    }else{
+    } else{
         $id = 0;
 //        redirect_page();
     }

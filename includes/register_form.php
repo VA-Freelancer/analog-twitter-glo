@@ -1,7 +1,4 @@
-<?php
-    $title = '';
 
-?>
 <section class="wrapper">
     <h2 class="tweet-form__title"><?=$title;?></h2>
     <?php if($error):?>
