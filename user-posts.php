@@ -1,12 +1,23 @@
 <?php
     include_once "includes/functions.php";
+//    if(!isset($_GET['id']) || empty($_GET['id'])) header("Location: " . get_url());
 
-    $id = 0;
-    if(isset($_GET['id']) && !empty($_GET['id'])){
+
+    if(isset($_SESSION['user']['id'])){
+        $id = $_SESSION['user']['id'];
+    }else if (isset($_GET['id']) && !empty($_GET['id'])){
         $id = $_GET['id'];
+    }else{
+        $id = 0;
+//        redirect_page();
     }
-    $posts = get_posts($id);
 
+    $posts = get_posts($id);
+    $title = 'Выводяться все твиты';
+    if(!empty($posts) ){
+        $title = 'Твиты пользователя @' . $posts[0]['login'];
+    }
+    $error = get_error_message();
     include_once "includes/header.php";
     include_once "includes/posts.php";
     include_once "includes/footer.php";

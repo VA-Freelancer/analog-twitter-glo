@@ -1,3 +1,5 @@
+
+<?php if (isset($_SESSION['user']['id'])):?>
 <section class="wrapper">
     <form class="tweet-form">
         <div class="tweet-form__wrapper">
@@ -12,3 +14,4 @@
         </div>
     </form>
 </section>
+<?php endif ?>

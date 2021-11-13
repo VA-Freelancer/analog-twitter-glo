@@ -10,6 +10,7 @@
 
 const openModal = function () {
 	const overlay = document.getElementById('login-modal').closest('.overlay');
+	document.body.classList.add("lock")
 	overlay.style.display = 'block';
 };
 
@@ -18,9 +19,31 @@ const closeModal = function (event) {
 				overlay = document.getElementById('login-modal').closest('.overlay'),
 				closeButton = overlay.querySelector('.modal-close__btn');
 
-	if (target === overlay || target === closeButton)	overlay.style.display = 'none';
+	if (target === overlay || target === closeButton) {
+		overlay.style.display = 'none';
+		document.body.classList.remove("lock")
+	}
 };
+if(document.querySelector('.tweet-form')){
+	document.querySelector('.tweet-form').addEventListener('input', (e)=>{
+		if(e.target.closest('.tweet-form__input')){
+			validate(e.target);
+		}
 
+	})
+}
+if(document.getElementById('login-modal')) {
+	document.getElementById('login-modal').addEventListener('input', (e) => {
+		if (e.target.closest('.tweet-form__input')) {
+			validate(e.target);
+		}
+
+	})
+}
+function validate(input) {
+	input.value = input.value.trim().replace(/[^a-zA-Z0-9]/g, '').replace(/\s/g, '');
+
+}
 const loginModalShowButton = document.querySelector('.header__link_profile_fill'),
 			loginModal = document.getElementById('login-modal'),
 			imgButton = document.querySelector('.tweet-img__btn');
