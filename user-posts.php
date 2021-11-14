@@ -1,6 +1,6 @@
 <?php
-include_once "includes/functions.php";
-    if(!isset($_SESSION['user']['id'])):
+    include_once "includes/functions.php";
+    if(!logged_in()):
         if(!isset($_GET['id']) || empty($_GET['id'])) header("Location: " . get_url());
     endif;
 
@@ -20,5 +20,8 @@ include_once "includes/functions.php";
     }
     $error = get_error_message();
     include_once "includes/header.php";
+    if (logged_in()):
+        include_once "includes/tweet_form.php";
+    endif;
     include_once "includes/posts.php";
     include_once "includes/footer.php";

@@ -22,10 +22,12 @@
     {
         return HOST . "/$page";
     }
+    //
     function redirect_page($page = ''){
         header("Location: " . get_url("$page"));
 
     }
+    // проверяем есть ли переменная тайтл для вывода - если нет выводим по дефолту
     function get_page_title($title = ''): string
     {
         if(!empty($title)){
@@ -34,6 +36,7 @@
             return SITE_NAME;
         }
     }
+    // подключаем к базе данных - данные частично беруться из файла config.php
     function db(){
         try{
             return new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET, DB_USER, DB_PASS,
@@ -53,21 +56,26 @@
 
         return db()->query($sql);
     }
-    function get_posts($user_id = 0){
-        if ($user_id>0) return db_query( "SELECT posts.*, users.name, users.login, users.avatar FROM `posts` JOIN `users` ON users.id = posts.user_id WHERE posts.user_id = $user_id")->fetchAll();
-        return db_query("SELECT posts.*, users.name, users.login, users.avatar FROM `posts` JOIN `users` ON users.id = posts.user_id;")->fetchAll();
+    // получаем все посты из базы
+    function get_posts($user_id = 0, $sort = false) {
+        $sorting  = 'DESC';
+        if($sort) $sorting = 'ASC';
+        if ($user_id>0) return db_query( "SELECT posts.*, users.name, users.login, users.avatar FROM `posts` JOIN `users` ON users.id = posts.user_id WHERE posts.user_id = $user_id ORDER BY posts.`date` $sorting;")->fetchAll();
+        return db_query("SELECT posts.*, users.name, users.login, users.avatar FROM `posts` JOIN `users` ON users.id = posts.user_id ORDER BY posts.`date` $sorting;")->fetchAll();
     }
+    // получения данных для авторизации и регистрации пользователя
     function get_user_info($login){
         return db_query( "SELECT * FROM `users` WHERE `login` = '$login';")->fetch();
 
     }
-
+    // дополнительная фунция для регистрации пользователя - добавления в базу данных
     function add_user($login, $pass){
         $login = trim($login);
         $name = ucfirst($login);
         $password = password_hash($pass, PASSWORD_DEFAULT);
         return db_query( "INSERT INTO `users` (`id`, `login`, `pass`, `name`) VALUES (NULL, '$login', '$password', '$name');", true);
     }
+    // регистрация пользователя
     function register_user($auth_data){
         if(empty($auth_data) ||
             !isset($auth_data['login']) || empty($auth_data['login']) ||
@@ -90,6 +98,7 @@
 
         }
     }
+    // авторизация пользователя
     function login($auth_data){
         if(empty($auth_data) ||
             !isset($auth_data['login']) || empty($auth_data['login'] ) ||
@@ -119,4 +128,24 @@
             $_SESSION['error'] = '';
         }
         return $error;
+    }
+    function logged_in(): bool
+    {
+        return isset($_SESSION['user']['id']) && !empty($_SESSION['user']['id']);
+    }
+    function add_post($text, $image){
+        $text = preg_replace('/[\s]{2,}/', ' ', trim($text));
+        if(mb_strlen($text) > 50){
+            $text = mb_substr(trim($text), 0, 46) . ' ...';
+        }
+        $user_id = $_SESSION['user']['id'];
+        $sql = "INSERT INTO `posts` (`id`, `user_id`, `text`, `image`) VALUES (NULL, $user_id, '$text', '$image');";
+        return db_query($sql, true);
+    }
+    function delete_post($id){
+        $user_id = $_SESSION['user']['id'];
+
+        if(isset($id) && !empty($id) && $id !== 0){
+          return db_query( "DELETE FROM `posts` WHERE `id` = $id AND `user_id` = $user_id;", true);
+        }
     }

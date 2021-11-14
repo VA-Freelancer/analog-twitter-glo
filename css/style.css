@@ -122,6 +122,37 @@ button {
 	height: 100%;
 	width: 100%;
 }
+#image-span{
+	position: relative;
+	max-width: 40px;
+	max-height: 40px;
+	cursor: pointer;
+}
+.image-box-big{
+	display: none;
+	position: absolute;
+	top: 25px;
+	left: 0;
+	width: 100%;
+	min-width: 350px;
+	max-width: 350px;
+	object-fit: cover;
+	z-index: 9999;
+}
+.image-box.active ~ .image-box-big{
+	display: block;
+}
+.image-box:hover ~ .image-box-big{
+	display: block;
+}
+.image-box{
+	width: 100%;
+	max-width: 40px;
+	max-height: 40px;
+	object-fit: cover;
+	border-radius: 5px;
+}
+
 .row {
 	display: flex;
 }

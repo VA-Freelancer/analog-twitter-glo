@@ -60,10 +60,28 @@ if (loginModal) {
 if (imgButton) {
 	imgButton.addEventListener('click', () => {
 		const imgInput = document.getElementById('image-path'),
-					imgSpan = document.getElementById('image-span');
+					imgSpan = document.getElementById('image-span'),
+					imgBox = document.createElement('img'),
+					imgBoxBig = document.createElement('img');
 
 		imgUrl = prompt('Введите адрес картинки');
-		imgInput.value = imgUrl;
-		imgSpan.textContent = imgUrl;
+		if(imgUrl !== 'null'){
+			imgInput.value = imgUrl;
+			imgSpan.innerHTML = ` 
+				<img src="${imgUrl}" class="image-box">
+				<img src="${imgUrl}" class="image-box-big">
+			`
+		}
+
+		// imgSpan.innerText = imgUrl;
 	});
 }
+	if(document.getElementById('image-span')){
+		document.getElementById('image-span').addEventListener('click', (e)=>{
+			if(e.target.closest('.image-box')) document.querySelector('.image-box').classList.toggle('active');
+			if(!e.target.closest('.image-box')) document.querySelector('.image-box').classList.remove('active');
+		})
+	}
+
+
+

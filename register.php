@@ -1,5 +1,6 @@
 <?php
     include_once "includes/functions.php";
+    if(logged_in()) redirect_page();
     $title= "Регистрация";
     $error = get_error_message();
 
