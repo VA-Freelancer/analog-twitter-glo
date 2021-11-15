@@ -6,7 +6,6 @@
  * @param bool $stop
  * @return string
  */
-
     function debug($var, bool $stop): string
     {
         echo "<pre>";
@@ -17,12 +16,10 @@
 
         return false;
     }
-
     function get_url(string $page = ''): string
     {
         return HOST . "/$page";
     }
-    //
     function redirect_page($page = ''){
         header("Location: " . get_url("$page"));
 
@@ -49,7 +46,6 @@
             die($e->getMessage());
         }
     }
-
     function db_query($sql, $exec = false) {
         if(empty($sql)) return false;
         if($exec) return db()->exec($sql);
@@ -57,6 +53,10 @@
         return db()->query($sql);
     }
     // получаем все посты из базы
+    function logged_in(): bool
+        {
+            return isset($_SESSION['user']['id']) && !empty($_SESSION['user']['id']);
+        }
     function get_posts($user_id = 0, $sort = false) {
         $sorting  = 'DESC';
         if($sort) $sorting = 'ASC';
@@ -129,10 +129,7 @@
         }
         return $error;
     }
-    function logged_in(): bool
-    {
-        return isset($_SESSION['user']['id']) && !empty($_SESSION['user']['id']);
-    }
+
     function add_post($text, $image){
         $text = preg_replace('/[\s]{2,}/', ' ', trim($text));
         if(mb_strlen($text) > 50){
@@ -149,3 +146,30 @@
           return db_query( "DELETE FROM `posts` WHERE `id` = $id AND `user_id` = $user_id;", true);
         }
     }
+    function get_likes_count($post_id){
+        if(empty($post_id)) return 0;
+        return db_query("SELECT COUNT(*) FROM `likes` WHERE `post_id` = $post_id;")->fetchColumn();
+    }
+    function is_post_liked($post_id): bool
+    {
+        $user_id = $_SESSION['user']['id'];
+        if(empty($post_id)) return false;
+        return db_query("SELECT * FROM `likes` WHERE `post_id` = $post_id AND `user_id` = $user_id;")->rowCount() > 0;
+    }
+    function add_like($post_id){
+        $user_id = $_SESSION['user']['id'];
+        if(empty($post_id)) return false;
+        $sql = "INSERT INTO `likes` (`user_id`, `post_id` ) VALUES ($user_id, $post_id);";
+        return db_query($sql, true);
+    }
+function delete_like($post_id){
+    $user_id = $_SESSION['user']['id'];
+    if(empty($post_id)) return false;
+    return db_query( "DELETE FROM `likes` WHERE `post_id` = $post_id AND `user_id` = $user_id;", true);
+}
+function get_liked_posts(){
+    $user_id = $_SESSION['user']['id'];
+
+    $sql = "SELECT posts.*, users.name, users.login, users.avatar FROM `likes` JOIN `posts` ON posts.id = likes.post_id JOIN `users` ON users.id = posts.user_id WHERE likes.user_id = $user_id;";
+    return db_query($sql)->fetchAll();
+}

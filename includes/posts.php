@@ -32,8 +32,18 @@
                         </div>
                     </div>
                     <footer>
-                        <button class="tweet__like">0</button>
-    <!--                    tweet__like_active-->
+                        <?php
+                        $likes_count = get_likes_count($post['id']);
+                        if(logged_in()): ?>
+                            <?php if(is_post_liked($post['id'])):?>
+                                <a class="tweet__like tweet__like_active" href="<?=get_url('includes/delete_like.php?id=') . $post['id'];?>"><?=$likes_count; ?></a>
+                            <?php else: ?>
+                                <a class="tweet__like" href="<?=get_url('includes/add_like.php?id=') . $post['id'];?>"><?=$likes_count; ?></a>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <div class="tweet__like"><?=$likes_count; ?></div>
+                        <?php endif; ?>
+
                     </footer>
                 </article>
             </li>

@@ -1,7 +1,7 @@
 <?php
     include_once "includes/functions.php";
     if(!logged_in()):
-        if(!isset($_GET['id']) || empty($_GET['id'])) header("Location: " . get_url());
+        if(!isset($_GET['id']) || empty($_GET['id'])) redirect_page();
     endif;
 
     if (isset($_GET['id']) && !empty($_GET['id'])){
@@ -12,8 +12,7 @@
         $id = 0;
 //        redirect_page();
     }
-
-    $posts = get_posts($id);
+    $new_url = "user_posts";
     $title = 'Выводяться все твиты';
     if(!empty($posts) ){
         $title = 'Твиты пользователя @' . $posts[0]['login'];
