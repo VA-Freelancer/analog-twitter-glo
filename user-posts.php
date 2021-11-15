@@ -13,6 +13,7 @@
 //        redirect_page();
     }
     $new_url = "user_posts";
+    $posts = get_posts($id);
     $title = 'Выводяться все твиты';
     if(!empty($posts) ){
         $title = 'Твиты пользователя @' . $posts[0]['login'];
